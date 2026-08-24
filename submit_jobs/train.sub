@@ -1,0 +1,38 @@
+project_dir = /path/to/ml4nlp
+data_dir = /path/to/large-storage/ml4nlp
+campaign = gt-v1
+
+universe = docker
+docker_image = pytorch/pytorch:2.2.2-cuda11.8-cudnn8-runtime
+initialdir = /path/to/home
+executable = $(project_dir)/submit_jobs/run.sh
+arguments = -m graph_transformer.train --data $(data_dir)/datasets --output $(data_dir)/runs/$(campaign)/pattern/$(variant)/seed-$(seed) --variant $(variant) --seed $(seed) --wandb-project graph-transformer-showcase
+environment = "PROJECT_DIR=$(project_dir) DATA_DIR=$(data_dir) VENV=$(data_dir)/venvs/graph-transformer-showcase WANDB_DIR=$(data_dir)/wandb REQUIRE_CUDA=1"
+should_transfer_files = NO
+getenv = HOME
++WantGPUHomeMounted = true
+
+output = $(data_dir)/logs/train.$(variant).$(seed).$(ClusterId).$(ProcId).out
+error = $(data_dir)/logs/train.$(variant).$(seed).$(ClusterId).$(ProcId).err
+log = $(data_dir)/logs/train.$(variant).$(seed).$(ClusterId).$(ProcId).log
+
+request_cpus = 4
+request_memory = 16G
+request_disk = 10G
+request_gpus = 1
+requirements = (GPUs_GlobalMemoryMb >= 12000)
+
+queue variant, seed from (
+    paper 21
+    paper 42
+    paper 87
+    no-pe 21
+    no-pe 42
+    no-pe 87
+    full 21
+    full 42
+    full 87
+    layer-norm 21
+    layer-norm 42
+    layer-norm 87
+)
