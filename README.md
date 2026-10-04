@@ -61,26 +61,34 @@ Each run folder gets `model.pt`, the best validation checkpoint with its setting
 
 ## Trained models
 
-One checkpoint per variant is attached to the [v1.0 release](https://github.com/jayBhagiya/ml4nlp/releases/tag/v1.0) (about 2 MB each): the seed with the highest validation balanced accuracy at its kept epoch. Each `.pt` file has a matching `.metrics.json` with its full training history.
+All checkpoints from the campaign are attached to the [v1.0 release](https://github.com/jayBhagiya/ml4nlp/releases/tag/v1.0) (22 MB). Each run folder holds `model.pt`, the best validation checkpoint with the settings needed to rebuild the model, and `metrics.json`, its full training history and test results. The `full` seed-21 run didn't finish, so the release has 11 of the 12 runs.
 
-| Variant | Seed | Validation balanced accuracy | Test balanced accuracy |
+| Run | Kept epoch | Validation balanced accuracy | Test balanced accuracy |
 |---|---:|---:|---:|
-| `paper` | 87 | 85.32 | 85.35 |
-| `no-pe` | 21 | 83.65 | 83.57 |
-| `full` | 87 | 58.61 | 58.50 |
-| `layer-norm` | 87 | 85.53 | 85.58 |
-
-A checkpoint stores the weights together with the settings needed to rebuild the model:
+| `paper-seed-21` | 82 | 85.18 | 85.38 |
+| `paper-seed-42` | 68 | 85.30 | 85.55 |
+| `paper-seed-87` | 79 | 85.32 | 85.35 |
+| `no-pe-seed-21` | 305 | 83.65 | 83.57 |
+| `no-pe-seed-42` | 17 | 79.13 | 79.24 |
+| `no-pe-seed-87` | 211 | 83.34 | 83.39 |
+| `full-seed-42` | 75 | 58.58 | 58.56 |
+| `full-seed-87` | 63 | 58.61 | 58.50 |
+| `layer-norm-seed-21` | 297 | 80.41 | 80.26 |
+| `layer-norm-seed-42` | 213 | 76.12 | 76.16 |
+| `layer-norm-seed-87` | 203 | 85.53 | 85.58 |
 
 ```bash
-curl -LO https://github.com/jayBhagiya/ml4nlp/releases/download/v1.0/pattern-paper-seed-87.pt
+curl -LO https://github.com/jayBhagiya/ml4nlp/releases/download/v1.0/graph-transformer-pattern.tar.gz
+tar xzf graph-transformer-pattern.tar.gz
 ```
 
 ```python
 import torch
 from graph_transformer import GraphTransformer
 
-checkpoint = torch.load("pattern-paper-seed-87.pt", map_location="cpu", weights_only=True)
+checkpoint = torch.load(
+    "graph-transformer-pattern/paper-seed-42/model.pt", map_location="cpu", weights_only=True
+)
 model = GraphTransformer(input_dim=checkpoint["input_dim"], **checkpoint["settings"])
 model.load_state_dict(checkpoint["model"])
 model.eval()
