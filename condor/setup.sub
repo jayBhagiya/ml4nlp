@@ -1,11 +1,11 @@
-# Create the log directory listed below before submitting this job.
+# Create this first: /path/to/large-storage/ml4nlp/logs
 project_dir = /path/to/ml4nlp
 data_dir = /path/to/large-storage/ml4nlp
 
 universe = docker
 docker_image = pytorch/pytorch:2.2.2-cuda11.8-cudnn8-runtime
-initialdir = /path/to/home
-executable = $(project_dir)/submit_jobs/run.sh
+initialdir = $(project_dir)
+executable = $(project_dir)/condor/run.sh
 arguments = setup
 environment = "PROJECT_DIR=$(project_dir) DATA_DIR=$(data_dir) VENV=$(data_dir)/venvs/graph-transformer-showcase"
 should_transfer_files = NO

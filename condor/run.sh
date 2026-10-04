@@ -41,7 +41,7 @@ fi
 
 PYTHON="${VENV}/bin/python"
 if [[ ! -x "${PYTHON}" ]]; then
-    echo "Environment missing at ${VENV}; submit setup.sub first." >&2
+    echo "Environment missing at ${VENV}; submit condor/setup.sub first." >&2
     exit 1
 fi
 

@@ -57,7 +57,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--wandb-mode",
         choices=("online", "offline", "disabled"),
-        default="online",
+        default="disabled",
     )
     parser.add_argument("--prepare-only", action="store_true")
     return parser.parse_args()
