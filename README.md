@@ -36,7 +36,7 @@ uv pip install --python .venv/bin/python --torch-backend cpu -e .
 uv pip install --python .venv/bin/python --torch-backend auto -e .
 ```
 
-Then download PATTERN (88 MB) and precompute the Laplacian eigenvectors once. This takes more than 10 minutes on a laptop CPU and about 3 GB of disk:
+Then download PATTERN (88 MB) and precompute the Laplacian eigenvectors once:
 
 ```bash
 .venv/bin/python -m graph_transformer.train --data data --prepare-only
@@ -58,6 +58,33 @@ PATTERN has 10,000 training graphs, so a full run isn't practical on a laptop CP
 ### Outputs
 
 Each run folder gets `model.pt`, the best validation checkpoint with its settings, and `metrics.json`, which holds the full training history, the parameter count, peak GPU memory, and the test loss and balanced accuracy. PATTERN is imbalanced (about 18% of nodes belong to the pattern), so both training loss and accuracy are class-balanced.
+
+## Trained models
+
+One checkpoint per variant is attached to the [v1.0 release](https://github.com/jayBhagiya/ml4nlp/releases/tag/v1.0) (about 2 MB each): the seed with the highest validation balanced accuracy at its kept epoch. Each `.pt` file has a matching `.metrics.json` with its full training history.
+
+| Variant | Seed | Validation balanced accuracy | Test balanced accuracy |
+|---|---:|---:|---:|
+| `paper` | 87 | 85.32 | 85.35 |
+| `no-pe` | 21 | 83.65 | 83.57 |
+| `full` | 87 | 58.61 | 58.50 |
+| `layer-norm` | 87 | 85.53 | 85.58 |
+
+A checkpoint stores the weights together with the settings needed to rebuild the model:
+
+```bash
+curl -LO https://github.com/jayBhagiya/ml4nlp/releases/download/v1.0/pattern-paper-seed-87.pt
+```
+
+```python
+import torch
+from graph_transformer import GraphTransformer
+
+checkpoint = torch.load("pattern-paper-seed-87.pt", map_location="cpu", weights_only=True)
+model = GraphTransformer(input_dim=checkpoint["input_dim"], **checkpoint["settings"])
+model.load_state_dict(checkpoint["model"])
+model.eval()
+```
 
 ## Running on an HTCondor cluster
 
