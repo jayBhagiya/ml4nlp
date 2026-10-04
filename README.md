@@ -36,7 +36,7 @@ uv pip install --python .venv/bin/python --torch-backend cpu -e .
 uv pip install --python .venv/bin/python --torch-backend auto -e .
 ```
 
-Then download PATTERN (88 MB) and precompute the Laplacian eigenvectors once:
+Then download PATTERN (88 MB) and precompute the Laplacian eigenvectors once. This takes more than 10 minutes on a laptop CPU and about 3 GB of disk:
 
 ```bash
 .venv/bin/python -m graph_transformer.train --data data --prepare-only
